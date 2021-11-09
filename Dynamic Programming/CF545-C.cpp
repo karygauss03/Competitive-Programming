@@ -41,27 +41,38 @@ void no()
 
 const int MAX = 100005;
 
-int n,x[MAX], h[MAX], dp[MAX];
+int n;
+int dp[MAX][4], x[MAX], h[MAX];
+
+// dp[i][j] - max number of trees we can cut in first i trees
+// j = 0 - we don't cut tree i
+// j = 1 - we cut tree i and it falls left
+// j = 2 - we cut tree i and it falls right
 
 void solve(){
     cin >> n;
-    for (int i = 0 ; i < n ; i++){
+    for (int i = 1 ; i <= n ; i++){
         cin >> x[i] >> h[i];
-        dp[i] = x[i];
     }
-    int ans = 2;
-    for (int i = 1 ; i < n - 1 ; i++) {
-        if (dp[i - 1] < x[i] - h[i]){
-            ans++;
+    x[0] = INT_MIN, x[n + 1] = INT_MAX;
+    for (int i = 1 ; i <= n ; i++){
+        dp[i][0] = max(dp[i - 1][0], dp[i - 1][1]);
+        if (x[i - 1] + h[i - 1] < x[i]){
+            dp[i][0] = max(dp[i][0], dp[i - 1][2]);
         }
-        else if (dp[i + 1] > x[i] + h[i]){
-            ans++;
-            dp[i] += h[i];
+        if (x[i] - h[i] > x[i - 1]){
+            dp[i][1] = 1 + max(dp[i - 1][1], dp[i - 1][0]);
+            if (x[i - 1] + h[i - 1] < x[i] - h[i]){
+                dp[i][1] = max(dp[i - 1][2] + 1, dp[i][1]);
+            }
+        }
+        if (x[i] + h[i] < x[i + 1]){
+            dp[i][2] = max(dp[i -1][1], max(dp[i - 1][2], dp[i - 1][0])) + 1;
         }
     }
-    if (n == 1) cout <<1;
-    else cout << ans;
+    cout << max(dp[n][0], max(dp[n][1], dp[n][2]));
 }
+
 
 int main()
 {
