@@ -65,7 +65,6 @@ void solve()
             cin >> colors[i];
         }
         int dp[n + 5][n + 5];
-        memset(dp, INT_MAX, sizeof dp);
         int tmp[n + 5][n + 5];
         memset(tmp, 0, sizeof tmp);
         for (int i = 1 ; i <= n ;i++){
