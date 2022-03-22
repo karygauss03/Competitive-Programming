@@ -61,7 +61,29 @@ int n, k;
 int dp[40][40];
 set<int> s;
 
+int sol(int i, int j){
+    if (i > j) return 1;
+    if (s.find(j) != s.end()){
+        return 0;
+    }
 
+    if (j == i + 1){
+        return 1;
+    }
+
+    int &res = dp[i][j];
+    if (res != -1) return res;
+
+    res = 0;
+
+    for (int k = i + 1 ; k <= j ; k+= 2){
+        if (s.find(k) == s.end()){
+            res += sol(i + 1, k - 1) * sol(k + 1, j);
+        }
+    }
+    return res;
+
+}
 
 void solve()
 {
@@ -70,31 +92,11 @@ void solve()
     for (int i = 0 ; i < k ; i++){
         int x;
         cin >> x;
+        x--,
         s.insert(x);
     }
-    memset(dp, 0, sizeof dp);
-
-    for (int i = 1 ; i <= 2*n ; i++){
-        for (int j = 0 ; j <= i ; j++){
-            if (i == 1){
-                if (j == 1){
-                    dp[i][j] = 1;
-                }
-                else dp[i][j] = 0;
-            }
-            else {
-                if (s.find(i) != s.end()){
-                    dp[i][j] = (j == 0) ? 0 : dp[i - 1][j - 1];
-                }
-                else{
-                    dp[i][j] = (j == 0) ? dp[i - 1][1] : (dp[i - 1][j - 1] + dp[i - 1][j + 1]);
-                }
-            }
-        }
-    }
-
-    cout << dp[2*n][0] << endl;
-
+    memset(dp, -1, sizeof dp);
+    cout << sol(0, 2*n - 1) << endl;
 }
 
 
