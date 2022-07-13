@@ -15,40 +15,39 @@ typedef long long ll;
 #define min(x, y) ((x) < (y) ? (x) : (y))
 const int N = 1e5 + 3;
 
-int n , k;
-int v[N];
-int dp[N][32];
+ll n , k;
+ll v[N];
+ll dp[N][32];
 
-int doDP(int idx , int km){
- 
+ll doDP(ll idx , ll km){
+
     if(idx == n)return 0 ;
     if(km == 32)km = 31 ;
- 
-    int &ret = dp[idx][km];
+
+    ll &ret = dp[idx][km];
     if(~ret)
         return ret ;
- 
- 
- 
-    int add = v[idx];
-    for(int i = 0 ; i < km  && add; i ++)add /= 2 ;
- 
- 
+
+
+
+    ll add = v[idx];
+    for(ll i = 0 ; i < km  && add; i ++)add /= 2 ;
+
+
     ret = doDP(idx + 1 , km + 1 ) + add / 2;
     ret = max(ret , doDP(idx + 1 , km) +add - k);
- 
+
     return ret ;
 }
 
 void solve(){
-    cin >> n >> k;
-    for (int i = 0 ; i <= n ; i++){
-	for (int j = 0 ; j < 32 ; j++){
-		dp[i][j] = -1;
-	}
-    }
-    for (int i = 0 ; i < n ; i++) cin >> v[i];
-    cout << doDP(0, 0) << endl;
+    cin >> n >> k ;
+    for(int i = 0 ; i <= n ; i ++)
+        for(int j = 0 ; j < 32 ; j ++)dp[i][j] = -1 ;
+
+    for(int i = 0 ; i < n ; i ++)cin >> v[i];
+
+    cout << doDP(0 , 0) << endl;
 }
 
 int main(){
