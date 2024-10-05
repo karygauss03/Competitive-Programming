@@ -1,45 +1,35 @@
 class Solution {
 private:
-    unordered_map<char, int> word2Freq;
-    unordered_map<char, int> subFreq;
+    bool isValid(vector<int> &v1, vector<int> &v2) {
+        for (int i = 0; i < 26; ++i) {
+            if (v2[i] != 0 && v1[i] < v2[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
 public:
     long long validSubstringCount(string word1, string word2) {
+        vector<int> word2Freq(26, 0);
+        vector<int> subFreq(26, 0);
+
         int n = word1.size(), m = word2.size();
         for (auto &w : word2) {
-            word2Freq[w]++;
+            word2Freq[w - 'a']++;
         }
 
         int l = 0;
         long long ans = 0;
         char cur;
-        int sz = 0, r;
+        int r;
         for (r = 0; r < n; ++r) {
-            // Reduce the size of the window as much as we can having all word2 characters present in the window!
-            while (sz == m && l <= r) {
-                ans += (n - r + 1);
-                cur = word1[l];
-                subFreq[cur]--;
-                if (word2Freq[cur] > 0 && word2Freq[cur] > subFreq[cur]) {
-                    --sz;
-                }
-                ++l;
-            }
             cur = word1[r];
-            if (word2Freq[cur] > 0 && word2Freq[cur] > subFreq[cur]) {
-                sz++;
+            subFreq[cur- 'a']++;
+            while (isValid(subFreq, word2Freq)) {
+                ans += (n - r);
+                cur = word1[l++];
+                subFreq[cur - 'a']--;
             }
-            subFreq[cur]++;
-        }
-
-        // Remaining characters
-        while (l <= r && sz == m) {
-            ans += (n - r + 1);
-            cur = word1[l];
-            subFreq[cur]--;
-            if (word2Freq[cur] > 0 && word2Freq[cur] > subFreq[cur]) {
-                --sz;
-            }
-            ++l;
         }
 
         return ans;
